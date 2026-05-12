@@ -18,26 +18,26 @@ pipeline {
     agent any
 
     // ── Pipeline-wide environment ─────────────────────────────────────────────
-    environment {
-        // GCP settings — update PROJECT_ID and REGION if needed
-        GCP_PROJECT_ID          = 'mlops-495517'
-        GCP_REGION              = 'us-central1'
-        GCP_BUCKET              = 'mlops_b1'
-        GAR_HOSTNAME            = 'us-central1-docker.pkg.dev'
-        GAR_REPO                = 'loan-default-repo'
-        IMAGE_NAME              = 'loan-default-api'
-        CLOUD_RUN_SERVICE       = 'loan-default-api'
+    // environment {
+    //     // GCP settings — update PROJECT_ID and REGION if needed
+    //     GCP_PROJECT_ID          = 'mlops-495517'
+    //     GCP_REGION              = 'us-central1'
+    //     GCP_BUCKET              = 'mlops_b1'
+    //     GAR_HOSTNAME            = 'us-central1-docker.pkg.dev'
+    //     GAR_REPO                = 'loan-default-repo'
+    //     IMAGE_NAME              = 'loan-default-api'
+    //     CLOUD_RUN_SERVICE       = 'loan-default-api'
 
-        // Full image URI (tag set per build)
-        IMAGE_URI = "${GAR_HOSTNAME}/${GCP_PROJECT_ID}/${GAR_REPO}/${IMAGE_NAME}:${BUILD_NUMBER}"
-        IMAGE_URI_LATEST = "${GAR_HOSTNAME}/${GCP_PROJECT_ID}/${GAR_REPO}/${IMAGE_NAME}:latest"
+    //     // Full image URI (tag set per build)
+    //     IMAGE_URI = "${GAR_HOSTNAME}/${GCP_PROJECT_ID}/${GAR_REPO}/${IMAGE_NAME}:${BUILD_NUMBER}"
+    //     IMAGE_URI_LATEST = "${GAR_HOSTNAME}/${GCP_PROJECT_ID}/${GAR_REPO}/${IMAGE_NAME}:latest"
 
-        // GCP service account key — stored in Jenkins credentials store
-        GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-service-account-key')
+    //     // GCP service account key — stored in Jenkins credentials store
+    //     GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-service-account-key')
 
-        // Python venv inside the workspace
-        VENV_DIR = "${WORKSPACE}/venv"
-    }
+    //     // Python venv inside the workspace
+    //     VENV_DIR = "${WORKSPACE}/venv"
+    // }
 
     options {
         // Keep the last 10 builds
