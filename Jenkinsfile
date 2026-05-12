@@ -32,8 +32,8 @@ pipeline {
     //     IMAGE_URI = "${GAR_HOSTNAME}/${GCP_PROJECT_ID}/${GAR_REPO}/${IMAGE_NAME}:${BUILD_NUMBER}"
     //     IMAGE_URI_LATEST = "${GAR_HOSTNAME}/${GCP_PROJECT_ID}/${GAR_REPO}/${IMAGE_NAME}:latest"
 
-    //     // GCP service account key — stored in Jenkins credentials store
-    //     GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-service-account-key')
+        // GCP service account key — stored in Jenkins credentials store
+        GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-service-account-key')
 
         // Python venv inside the workspace
         VENV_DIR = "${WORKSPACE}/venv"

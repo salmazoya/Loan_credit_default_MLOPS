@@ -49,8 +49,21 @@ RUN curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# ── Docker CLI ───────────────────────────────────────────────────────────────
+# Install the Docker CLI so Jenkins can run `docker build`, `docker push`, etc.
+# The actual Docker daemon comes from the host via socket mount (no DinD needed)
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | \
+        gpg --dearmor -o /usr/share/keyrings/docker.gpg && \
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker.gpg] \
+        https://download.docker.com/linux/debian bookworm stable" | \
+        tee /etc/apt/sources.list.d/docker.list && \
+    apt-get update -y && \
+    apt-get install -y --no-install-recommends docker-ce-cli && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # ── Docker socket access ──────────────────────────────────────────────────────
-# Jenkins uses the host Docker engine via socket mount (no DinD needed)
+# Give jenkins user access to the host Docker socket
 RUN groupadd -f docker && \
     usermod -aG docker jenkins
 
