@@ -296,6 +296,6 @@ pipeline {
     //             docker image prune -f || true
     //         '''
     //     }
-    // }
+    }
 
 } // end pipeline
