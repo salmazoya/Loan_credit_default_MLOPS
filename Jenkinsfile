@@ -29,8 +29,8 @@ pipeline {
         CLOUD_RUN_SERVICE       = 'loan-default-api'
 
     //     // Full image URI (tag set per build)
-    //     IMAGE_URI = "${GAR_HOSTNAME}/${GCP_PROJECT_ID}/${GAR_REPO}/${IMAGE_NAME}:${BUILD_NUMBER}"
-    //     IMAGE_URI_LATEST = "${GAR_HOSTNAME}/${GCP_PROJECT_ID}/${GAR_REPO}/${IMAGE_NAME}:latest"
+        IMAGE_URI = "${GAR_HOSTNAME}/${GCP_PROJECT_ID}/${GAR_REPO}/${IMAGE_NAME}:${BUILD_NUMBER}"
+        IMAGE_URI_LATEST = "${GAR_HOSTNAME}/${GCP_PROJECT_ID}/${GAR_REPO}/${IMAGE_NAME}:latest"
 
         // GCP service account key — stored in Jenkins credentials store
         GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-service-account-key')
@@ -143,46 +143,46 @@ pipeline {
             }
         }
 
-    //     // ── Stage 5: Retrain Model (main only) ────────────────────────────────
-    //     stage('Retrain Model') {
-    //         when {
-    //             branch 'main'
-    //         }
-    //         steps {
-    //             sh '''
-    //                 set -e
-    //                 . ${VENV_DIR}/bin/activate
+        // ── Stage 5: Retrain Model (main only) ────────────────────────────────
+        stage('Retrain Model') {
+            when {
+                branch 'main'
+            }
+            steps {
+                sh '''
+                    set -e
+                    . ${VENV_DIR}/bin/activate
 
-    //                 echo "==> Pulling raw + processed data from GCP for retraining..."
-    //                 python -m src.gcp_sync --pull --group raw
-    //                 python -m src.gcp_sync --pull --group processed
+                    echo "==> Pulling raw + processed data from GCP for retraining..."
+                    python -m src.gcp_sync --pull --group raw
+                    python -m src.gcp_sync --pull --group processed
 
-    //                 echo "==> Running training pipeline..."
-    //                 python -m src.train
+                    echo "==> Running training pipeline..."
+                    python -m src.train
 
-    //                 echo "==> Training complete."
-    //             '''
-    //         }
-    //     }
+                    echo "==> Training complete."
+                '''
+            }
+        }
 
-    //     // ── Stage 6: Drift Monitoring (main only) ─────────────────────────────
-    //     stage('Drift Monitoring') {
-    //         when {
-    //             branch 'main'
-    //         }
-    //         steps {
-    //             sh '''
-    //                 set -e
-    //                 . ${VENV_DIR}/bin/activate
+        // ── Stage 6: Drift Monitoring (main only) ─────────────────────────────
+        stage('Drift Monitoring') {
+            when {
+                branch 'main'
+            }
+            steps {
+                sh '''
+                    set -e
+                    . ${VENV_DIR}/bin/activate
 
-    //                 echo "==> Running Evidently AI drift monitoring..."
-    //                 python -m src.monitor
+                    echo "==> Running Evidently AI drift monitoring..."
+                    python -m src.monitor
 
-    //                 echo "==> Drift reports saved to artifacts/monitoring/"
-    //                 ls -lh artifacts/monitoring/ || true
-    //             '''
-    //         }
-    //     }
+                    echo "==> Drift reports saved to artifacts/monitoring/"
+                    ls -lh artifacts/monitoring/ || true
+                '''
+            }
+        }
 
         // ── Stage 7: Push Artifacts to GCP (main only) ───────────────────────
         stage('Push Artifacts to GCP') {
