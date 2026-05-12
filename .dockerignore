@@ -1,0 +1,43 @@
+# ── Artifacts — pulled from GCP at runtime, not baked into image ─────────────
+artifacts/raw/
+artifacts/processed/
+artifacts/models/
+artifacts/plots/
+artifacts/monitoring/
+artifacts/preprocessor/
+
+# ── MLflow runs ───────────────────────────────────────────────────────────────
+mlruns/
+mlflow.db
+
+# ── Virtual environment ───────────────────────────────────────────────────────
+venv/
+env/
+.venv/
+
+# ── Python cache ──────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# ── Jupyter notebooks (not needed in container) ───────────────────────────────
+notebook/
+*.ipynb
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+logs/
+*.log
+
+# ── GCP credentials — mount as volume, never bake into image ─────────────────
+*.json
+credentials/
+
+# ── Tests (not needed in production image) ───────────────────────────────────
+tests/
+
+# ── OS / IDE ──────────────────────────────────────────────────────────────────
+.DS_Store
+.git/
+.gitignore
+.idea/
+.vscode/

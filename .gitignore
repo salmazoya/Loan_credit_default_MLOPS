@@ -1,0 +1,52 @@
+# ── Python ────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# ── Virtual environment ───────────────────────────────────────────────────────
+venv/
+env/
+.venv/
+.env
+
+# ── Jupyter ───────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ── Artifacts — large files pushed to GCP instead ────────────────────────────
+artifacts/raw/
+artifacts/processed/
+artifacts/models/
+artifacts/plots/
+artifacts/monitoring/
+artifacts/preprocessor/
+
+# ── MLflow runs (large, local only) ──────────────────────────────────────────
+mlruns/
+mlflow.db
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+logs/
+*.log
+
+# ── GCP credentials — never commit these ─────────────────────────────────────
+*.json
+service_account*.json
+gcp_key*.json
+credentials*.json
+
+# ── OS files ──────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── IDE ───────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo

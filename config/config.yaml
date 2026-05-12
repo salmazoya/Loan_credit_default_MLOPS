@@ -1,0 +1,108 @@
+data_ingestion:
+  # GCP settings
+  bucket_name: "mlops_b1"
+  bucket_file_name: "credit_risk_dataset.csv"
+
+  # Raw file names (expected inside artifacts/raw/)
+  raw_files:
+    application_train:    "application_train.csv"
+    application_test:     "application_test.csv"
+    bureau:               "bureau.csv"
+    bureau_balance:       "bureau_balance.csv"
+    previous_application: "previous_application.csv"
+    pos_cash_balance:     "POS_CASH_balance.csv"
+    credit_card_balance:  "credit_card_balance.csv"
+    installments_payments: "installments_payments.csv"
+    columns_description:  "HomeCredit_columns_description.csv"
+
+  # Train/test split
+  train_ratio: 0.8
+  random_state: 42
+  target_column: "TARGET"
+  id_column: "SK_ID_CURR"
+
+  # Minimum required columns per file for schema validation
+  required_columns:
+    application:
+      - SK_ID_CURR
+      - AMT_INCOME_TOTAL
+      - AMT_CREDIT
+      - AMT_ANNUITY
+      - DAYS_BIRTH
+      - DAYS_EMPLOYED
+      - EXT_SOURCE_1
+      - EXT_SOURCE_2
+      - EXT_SOURCE_3
+    bureau:
+      - SK_ID_CURR
+      - SK_ID_BUREAU
+      - CREDIT_ACTIVE
+      - AMT_CREDIT_SUM
+      - AMT_CREDIT_SUM_DEBT
+      - AMT_CREDIT_SUM_OVERDUE
+      - DAYS_CREDIT
+    bureau_balance:
+      - SK_ID_BUREAU
+      - MONTHS_BALANCE
+      - STATUS
+    previous_application:
+      - SK_ID_CURR
+      - SK_ID_PREV
+      - NAME_CONTRACT_STATUS
+      - AMT_APPLICATION
+      - AMT_CREDIT
+      - DAYS_DECISION
+    pos_cash_balance:
+      - SK_ID_CURR
+      - SK_ID_PREV
+      - MONTHS_BALANCE
+      - SK_DPD
+    credit_card_balance:
+      - SK_ID_CURR
+      - SK_ID_PREV
+      - MONTHS_BALANCE
+      - AMT_BALANCE
+      - AMT_CREDIT_LIMIT_ACTUAL
+      - SK_DPD
+    installments_payments:
+      - SK_ID_CURR
+      - SK_ID_PREV
+      - NUM_INSTALMENT_NUMBER
+      - DAYS_INSTALMENT
+      - DAYS_ENTRY_PAYMENT
+      - AMT_INSTALMENT
+      - AMT_PAYMENT
+
+model:
+  # LightGBM hyperparameters
+  objective:          "binary"
+  metric:             "auc"
+  boosting_type:      "gbdt"
+  learning_rate:      0.05
+  n_estimators:       2000
+  num_leaves:         31
+  max_depth:          -1
+  min_child_samples:  20
+  subsample:          0.8
+  subsample_freq:     1
+  colsample_bytree:   0.8
+  reg_alpha:          0.1
+  reg_lambda:         0.1
+  random_state:       42
+  n_jobs:             -1
+  verbose:            -1
+
+  # Cross-validation
+  n_folds:            5
+  early_stopping_rounds: 100
+
+  # Classification threshold (from threshold optimisation)
+  threshold:          0.66
+
+  # Minimum AUC the new model must beat to replace the current one
+  min_auc_improvement: 0.001
+
+mlflow:
+  experiment_name: "home_credit_default_risk"
+  run_name_prefix: "lgbm"
+  tracking_uri:    "mlruns"         # local folder — change to remote URI for GCP
