@@ -235,7 +235,7 @@ class PredictResponse(BaseModel):
 
 class BatchPredictRequest(BaseModel):
     """Batch prediction — up to 100 applicants."""
-    applicants: List[PredictRequest] = Field(..., max_length=100)
+    applicants: List[PredictRequest] = Field(..., min_length=1, max_length=100)
 
 
 class BatchPredictResponse(BaseModel):
@@ -350,7 +350,7 @@ def predict_single(request: PredictRequest):
 
     try:
         applicant_dict = _request_to_dict(request)
-        threshold = request.threshold or 0.66
+        threshold = request.threshold if request.threshold is not None else 0.66
 
         result = predict(applicant_dict, threshold=threshold)
 
@@ -400,7 +400,7 @@ def predict_batch(request: BatchPredictRequest):
         t0 = time.time()
         try:
             applicant_dict = _request_to_dict(applicant_req)
-            threshold = applicant_req.threshold or 0.66
+            threshold = applicant_req.threshold if applicant_req.threshold is not None else 0.66
             result = predict(applicant_dict, threshold=threshold)
             latency = round((time.time() - t0) * 1000, 2)
 
