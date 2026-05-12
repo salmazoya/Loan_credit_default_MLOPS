@@ -18,7 +18,7 @@ pipeline {
     agent any
 
     // ── Pipeline-wide environment ─────────────────────────────────────────────
-    // environment {
+    environment {
     //     // GCP settings — update PROJECT_ID and REGION if needed
     //     GCP_PROJECT_ID          = 'mlops-495517'
     //     GCP_REGION              = 'us-central1'
@@ -35,9 +35,9 @@ pipeline {
     //     // GCP service account key — stored in Jenkins credentials store
     //     GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-service-account-key')
 
-    //     // Python venv inside the workspace
-    //     VENV_DIR = "${WORKSPACE}/venv"
-    // }
+        // Python venv inside the workspace
+        VENV_DIR = "${WORKSPACE}/venv"
+    }
 
     options {
         // Keep the last 10 builds
@@ -66,34 +66,34 @@ pipeline {
             }
         }
 
-    //     // ── Stage 2: Install Python Dependencies ─────────────────────────────
-    //     stage('Install Dependencies') {
-    //         steps {
-    //             sh '''
-    //                 set -e
-    //                 echo "==> Creating Python virtual environment..."
-    //                 python3 -m venv ${VENV_DIR}
-    //                 . ${VENV_DIR}/bin/activate
+        // ── Stage 2: Install Python Dependencies ─────────────────────────────
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                    set -e
+                    echo "==> Creating Python virtual environment..."
+                    python3 -m venv ${VENV_DIR}
+                    . ${VENV_DIR}/bin/activate
 
-    //                 echo "==> Upgrading pip..."
-    //                 pip install --upgrade pip --quiet
+                    echo "==> Upgrading pip..."
+                    pip install --upgrade pip --quiet
 
-    //                 echo "==> Installing project requirements..."
-    //                 pip install -r requirements.txt --quiet
+                    echo "==> Installing project requirements..."
+                    pip install -r requirements.txt --quiet
 
-    //                 echo "==> Installing test dependencies..."
-    //                 pip install pytest pytest-cov httpx --quiet
+                    echo "==> Installing test dependencies..."
+                    pip install pytest pytest-cov httpx --quiet
 
-    //                 echo "==> Python version:"
-    //                 python --version
+                    echo "==> Python version:"
+                    python --version
 
-    //                 echo "==> Key packages:"
-    //                 pip show lightgbm | grep Version
-    //                 pip show fastapi   | grep Version
-    //                 pip show evidently | grep Version
-    //             '''
-    //         }
-    //     }
+                    echo "==> Key packages:"
+                    pip show lightgbm | grep Version
+                    pip show fastapi   | grep Version
+                    pip show evidently | grep Version
+                '''
+            }
+        }
 
     //     // ── Stage 3: Pull Model Artifacts from GCP ────────────────────────────
     //     stage('Pull Artifacts from GCP') {
