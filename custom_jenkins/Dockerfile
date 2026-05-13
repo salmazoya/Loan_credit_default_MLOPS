@@ -32,7 +32,8 @@ RUN apt-get update -y && \
         apt-transport-https \
         ca-certificates \
         gnupg \
-        git && \
+        git \
+        gosu && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
