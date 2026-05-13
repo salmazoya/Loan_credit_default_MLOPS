@@ -67,9 +67,18 @@ RUN curl -fsSL https://download.docker.com/linux/debian/gpg | \
 RUN groupadd -f docker && \
     usermod -aG docker jenkins
 
-# ── Switch back to Jenkins user ───────────────────────────────────────────────
-USER jenkins
+# ── Entrypoint: fix docker.sock permissions on every startup ──────────────────
+# macOS Docker Desktop mounts the socket as root:root 0600, so we fix it
+# as root before handing off to the normal Jenkins entrypoint.
+COPY jenkins-entrypoint.sh /jenkins-entrypoint.sh
+RUN chmod +x /jenkins-entrypoint.sh
 
-# ── Verify installations ──────────────────────────────────────────────────────
+# ── Verify installations (as jenkins user) ───────────────────────────────────
+USER jenkins
 RUN python3 --version && \
     gcloud --version
+
+# ── Entrypoint runs as root so it can chmod the docker socket ─────────────────
+# After fixing permissions it uses gosu to drop back to the jenkins user.
+USER root
+ENTRYPOINT ["/jenkins-entrypoint.sh"]
