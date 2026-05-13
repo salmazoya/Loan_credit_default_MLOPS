@@ -17,6 +17,15 @@
 pipeline {
     agent any
 
+    // ── Build parameters ──────────────────────────────────────────────────────
+    parameters {
+        booleanParam(
+            name: 'RUN_RETRAIN',
+            defaultValue: false,
+            description: 'Tick to retrain the LightGBM model in this build (slow — ~20 min). Leave unticked for a fast code/test/deploy build.'
+        )
+    }
+
     // ── Pipeline-wide environment ─────────────────────────────────────────────
     environment {
         // GCP settings — update PROJECT_ID and REGION if needed
@@ -143,10 +152,13 @@ pipeline {
             }
         }
 
-        // ── Stage 5: Retrain Model (main only) ────────────────────────────────
+        // ── Stage 5: Retrain Model (main + RUN_RETRAIN=true only) ───────────────
         stage('Retrain Model') {
             when {
-                branch 'main'
+                allOf {
+                    branch 'main'
+                    expression { return params.RUN_RETRAIN }
+                }
             }
             steps {
                 sh '''
@@ -165,10 +177,13 @@ pipeline {
             }
         }
 
-        // ── Stage 6: Drift Monitoring (main only) ─────────────────────────────
+        // ── Stage 6: Drift Monitoring (main + RUN_RETRAIN=true only) ────────────
         stage('Drift Monitoring') {
             when {
-                branch 'main'
+                allOf {
+                    branch 'main'
+                    expression { return params.RUN_RETRAIN }
+                }
             }
             steps {
                 sh '''
