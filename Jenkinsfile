@@ -280,7 +280,9 @@ pipeline {
                         --min-instances=0 \
                         --max-instances=3 \
                         --port=8080 \
-                        --set-env-vars="GOOGLE_APPLICATION_CREDENTIALS=/app/credentials/gcp_key.json" \
+                        --timeout=300 \
+                        --service-account=mlops-project1@mlops-495517.iam.gserviceaccount.com \
+                        --set-env-vars="GCP_BUCKET=mlops_b1" \
                         --quiet
 
                     echo "==> Deployment complete. Service URL:"

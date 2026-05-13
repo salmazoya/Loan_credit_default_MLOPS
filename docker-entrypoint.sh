@@ -11,14 +11,21 @@ echo "  Loan Default Risk API — Starting Up"
 echo "========================================"
 
 # ── Pull model artifacts from GCP ────────────────────────────────────────────
-# Only pull models (not raw/processed data — not needed for inference)
+# Supports two auth modes:
+#   1. Key file  — GOOGLE_APPLICATION_CREDENTIALS points to a JSON key (local/Docker)
+#   2. ADC       — Cloud Run service account identity (no key file needed)
+echo "[1/2] Pulling model artifacts from GCP..."
+
 if [ -n "$GOOGLE_APPLICATION_CREDENTIALS" ] && [ -f "$GOOGLE_APPLICATION_CREDENTIALS" ]; then
-    echo "[1/2] Pulling model artifacts from GCP..."
-    python -m src.gcp_sync --pull --group models
+    echo "      Auth: service account key file"
+else
+    echo "      Auth: Application Default Credentials (Cloud Run service account)"
+fi
+
+if python -m src.gcp_sync --pull --group models; then
     echo "      Model artifacts ready."
 else
-    echo "[1/2] No GCP credentials found — using local model artifacts."
-    echo "      Set GOOGLE_APPLICATION_CREDENTIALS to pull from GCP."
+    echo "      WARNING: GCP pull failed — will try local artifacts."
 fi
 
 # ── Verify model artifacts exist ─────────────────────────────────────────────
